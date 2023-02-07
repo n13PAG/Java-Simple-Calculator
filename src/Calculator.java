@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public abstract class Calculator {
+public class Calculator {
     private int cacheCapacity;
     private ArrayList<Double> cachedResults;
     private int currentResultIndex;
