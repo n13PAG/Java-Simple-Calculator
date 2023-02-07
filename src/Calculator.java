@@ -39,7 +39,7 @@ public class Calculator {
         cachedResults.clear();
     }
 
-//    public double makeTheOperationWithOldResult(result){
+//    public double makeTheOperationWithOldResult(double result){
 //        // ?
 //    }
 
@@ -50,6 +50,7 @@ public class Calculator {
             cachedResults.remove(0);
         }
         cachedResults.add(result);
+        currentResultIndex = cachedResults.size() - 1;
     }
 
     /* Initializes the results cache and sets its capacity. Active index of
