@@ -1,18 +1,22 @@
 import java.util.ArrayList;
 
 public abstract class Calculator {
-    private int cacheCapcity;
+    private int cacheCapacity;
     private ArrayList<Double> cachedResults;
     private int currentResultIndex;
 
+    /* Returns previous calculated result or return 0 if there are
+     no cached results */
     public double getLastResult(){
         if (cachedResults.size() == 0){
-            return null;
+            return 0;
         }
         currentResultIndex = cachedResults.size() - 1;
         return cachedResults.get(cachedResults.size() - 1);
     }
 
+    /* Cycles back by one index through the results cache and returns the
+    * value found */
     public double cycleToPreviousResult(){
         currentResultIndex -= 1;
         if (currentResultIndex < 0){
@@ -21,10 +25,12 @@ public abstract class Calculator {
         return cachedResults.get(currentResultIndex);
     }
 
+    /* Cycles forward by one index through the results cache and returns
+    * the value found */
     public double cycleToNextResult(){
         currentResultIndex += 1;
         if (currentResultIndex >= cachedResults.size()){
-            return getLastResult()
+            return getLastResult();
         }
         return cachedResults.get(currentResultIndex);
     }
@@ -33,20 +39,24 @@ public abstract class Calculator {
         cachedResults.clear();
     }
 
-    public double makeTheOperationWithOldResult(result){
-        // ?
-    }
+//    public double makeTheOperationWithOldResult(result){
+//        // ?
+//    }
 
-    public void storeResult(doube result){
-        if (cachedResults.size() == cacheCapcity){
+    /* Adds result of calculation to the results cache. It removes the
+    * first value in the cache before add the new result if the cache is full */
+    public void storeResult(double result){
+        if (cachedResults.size() == cacheCapacity){
             cachedResults.remove(0);
         }
-        cachedResults.add(r);
+        cachedResults.add(result);
     }
 
-    public void setResultCacheCapacity(cacheCapcity){
-        this.cacheCapcity = cacheCapcity;
-        cachedResults = new ArrayList<>(cacheCapcity);
+    /* Initializes the results cache and sets its capacity. Active index of
+    * result cache is set */
+    public void setResultCacheCapacity(int cacheCapacity){
+        this.cacheCapacity = cacheCapacity;
+        cachedResults = new ArrayList<>(cacheCapacity);
         currentResultIndex = 0;
     }
 
