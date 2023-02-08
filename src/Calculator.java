@@ -1,9 +1,68 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Calculator {
     private ArrayList<Double> operands;
     private char operator;
+    private int cacheCapacity;
+    private ArrayList<Double> cachedResults;
+    private int currentResultIndex;
+
+    public boolean checkInput(String userInput){
+        if (userInput == null){
+            return false;
+        }
+
+        boolean validInput = false;
+        char[] inputChars = userInput.toCharArray();
+        char[] operators = new char[] { '+', '-', '*', '/', 'q', 's'};
+        boolean hasNoOperators = true;
+        boolean hasNoNumbers = true;
+        boolean lastInputCharWasOperator = false;
+
+        for (int i = 0; i < inputChars.length; i++){
+            if (Character.isDigit(inputChars[i])){
+                hasNoNumbers = false;
+                lastInputCharWasOperator = false;
+                continue;
+            }
+            for (char c : operators){
+                if (i == 0){
+                    if (inputChars[i] == c){
+                        // First input char was an operator
+                        return false;
+                    }
+                }
+
+                if (i == inputChars.length - 1){
+                    if (inputChars[i] == c){
+                        // Last input char was an operator
+                        return false;
+                    }
+                }
+
+                if (inputChars[i] == c){
+                    if (!lastInputCharWasOperator){
+                        lastInputCharWasOperator = true;
+                        hasNoOperators = false;
+                    }
+                    else {
+                        // Operators were input consecutively
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (hasNoNumbers){
+            return false;
+        }
+
+        if (hasNoOperators){
+            return false;
+        }
+
+        return true;
+    }
 
     /*  Selects number input from buttons.The value is inputted as type string, checked if numeric.
         When a non-numeric input is received the value is parsed to type double and returned*/
@@ -43,17 +102,17 @@ public class Calculator {
     }
 
     /*Checks if input string value is numeric and returns true if can be parsed as double and false if nfe */
-    public boolean checkInput(String s){
-        if (s==null){
-            return false;
-        }
-        try{
-            double value = Double.parseDouble(s);
-        }catch (NumberFormatException nfe){
-            return false;
-        }
-        return true;
-    }
+//    public boolean checkInput(String s){
+//        if (s==null){
+//            return false;
+//        }
+//        try{
+//            double value = Double.parseDouble(s);
+//        }catch (NumberFormatException nfe){
+//            return false;
+//        }
+//        return true;
+//    }
 
     @Override
     public String toString() {
@@ -66,9 +125,7 @@ public class Calculator {
                 '}';
     }
 
-    private int cacheCapacity;
-    private ArrayList<Double> cachedResults;
-    private int currentResultIndex;
+
 
     /* Returns previous calculated result or return 0 if there are
      no cached results */
@@ -104,26 +161,8 @@ public class Calculator {
         cachedResults.clear();
     }
 
-//    public double makeTheOperationWithOldResult(double result){
-//        switch (operator){
-//            case '+':
-//                break;
-//            case '-':
-//                break;
-//            case '*':
-//                break;
-//            case '/':
-//                break;
-//            case '^':
-//                break;
-//            case 'q':
-//                break;
-//            case '+':
-//                break;
-//            case '-':
-//                break;
-//        }
-//    }
+    // Should be overridden in inheriting classes
+//    public abstract double makeTheOperationWithOldResult(double result);
 
     /* Adds result of calculation to the results cache. It removes the
     * first value in the cache before add the new result if the cache is full */
@@ -142,5 +181,49 @@ public class Calculator {
         cachedResults = new ArrayList<>(cacheCapacity);
         currentResultIndex = 0;
     }
+
+    public double[] parseInput_2_Operands(String input){
+        char[] operators = new char[] { '+', '-', '*', '/'};
+        char[] inputCharArray = input.toCharArray();
+
+//        for (char c : inputCharArray){
+//            for (char op : operators){
+//                if (c == op){
+//                    operator = op;
+//                }
+//            }
+//        }
+
+
+        String firstOperand = "";
+        String secondOperand = "";
+        boolean firstOperandComplete = false;
+        for (int i = 0; i < inputCharArray.length; i++){
+            char c = inputCharArray[i];
+            if (!firstOperandComplete){
+                if (Character.isDigit(c)){
+                    firstOperand += c;
+                }
+                else if (!Character.isLetter(c) && !Character.isWhitespace(c)) {
+                    operator = c;
+                    firstOperandComplete = true;
+                }
+            }
+            else {
+                if (Character.isDigit(c)){
+                    secondOperand += c;
+                }
+            }
+        }
+
+        return new double[] {Integer.parseInt(firstOperand), Integer.parseInt(secondOperand)};
+    }
+
+//    public double[] parseInput_Multiple_Operands(String input){
+//
+//        Stack<Character> operators = new Stack<>();
+//        Queue<String> operandsQueue = new LinkedList<>();
+//
+//    }
 
 }
