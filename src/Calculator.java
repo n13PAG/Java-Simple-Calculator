@@ -7,8 +7,6 @@ public class Calculator {
     private int cacheCapacity;
     private ArrayList<Double> cachedResults;
     private int currentResultIndex;
-    private char operator;
-
 
     /* Returns previous calculated result or return 0 if there are
      no cached results */
@@ -79,7 +77,6 @@ public class Calculator {
                 if (Character.isDigit(c)) {
                     f1.append(c);
                 } else if (!Character.isLetter(c) && !Character.isWhitespace(c)) {
-                    operator = c;
                     firstOperandComplete = true;
                 }
             } else {
@@ -95,7 +92,7 @@ public class Calculator {
         return new double[] {Integer.parseInt(firstOperand), Integer.parseInt(secondOperand)};
     }
 
-    public String parseInput(String userInput){
+    public ArrayList<String> parseInput(String userInput){
         char[] operatorPrecedence = new char[]{'+', '-', '*', '/', '^', 'q'};
         String precedenceString = new String(operatorPrecedence);
         Stack<Character> operatorStack = new Stack<>();
@@ -139,14 +136,8 @@ public class Calculator {
         while (!operatorStack.isEmpty()){
             outputQueue.add(String.valueOf(operatorStack.pop()));
         }
-
-        StringBuilder output = new StringBuilder();
-        for (String s : outputQueue){
-            output.append(s);
-            System.out.print(s);
-        }
-
-        return output.toString();
+        
+        return new ArrayList<>(outputQueue);
     }
 
     /* Verifies whether the userInput is valid or not */
@@ -210,5 +201,16 @@ public class Calculator {
 
         return true;
     }
+
+//    public double evaluate(String parsedString){
+//        Stack<String> output = new Stack<>();
+//        char[] charArray = parsedString.toCharArray();
+//        for (int i = 0; i < charArray.length; i++) {
+//            char c = charArray[i];
+//            if (Character.isDigit(c)) {
+//                output.push(c);
+//            }
+//        }
+//    }
 
 }
