@@ -1,10 +1,14 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 public class Calculator {
     private int cacheCapacity;
     private ArrayList<Double> cachedResults;
     private int currentResultIndex;
     private char operator;
+
 
     /* Returns previous calculated result or return 0 if there are
      no cached results */
@@ -91,6 +95,60 @@ public class Calculator {
         return new double[] {Integer.parseInt(firstOperand), Integer.parseInt(secondOperand)};
     }
 
+    public String parseInput(String userInput){
+        char[] operatorPrecedence = new char[]{'+', '-', '*', '/', '^', 'q'};
+        String precedenceString = new String(operatorPrecedence);
+        Stack<Character> operatorStack = new Stack<>();
+        Queue<String> outputQueue = new LinkedList<>();
+
+        char[] inputChars = userInput.toCharArray();
+
+        StringBuilder operand = new StringBuilder();
+        boolean stringStarted = false;
+        for (char c : inputChars) {
+            if (Character.isDigit(c)) {
+                operand.append(c);
+                stringStarted = true;
+            } else {
+                // If Char is decimal add to operand string
+                if (c == '.' && stringStarted) {
+                    operand.append(c);
+                    continue;
+                }
+
+                // If operand string has been started and the
+                // char is an operator complete string and add
+                // to the output queue
+                if (stringStarted) {
+                    stringStarted = false;
+                    outputQueue.add(operand.toString());
+                    operand.delete(0, operand.length());
+                }
+
+                if (!operatorStack.isEmpty())
+                    System.out.println(precedenceString.indexOf(c) <= precedenceString.indexOf(operatorStack.peek()));
+                while (!operatorStack.isEmpty() &&
+                        precedenceString.indexOf(c) <= precedenceString.indexOf(operatorStack.peek())) {
+                    outputQueue.add(String.valueOf(operatorStack.pop()));
+                }
+
+                operatorStack.push(c);
+            }
+        }
+        outputQueue.add(operand.toString());
+        while (!operatorStack.isEmpty()){
+            outputQueue.add(String.valueOf(operatorStack.pop()));
+        }
+
+        StringBuilder output = new StringBuilder();
+        for (String s : outputQueue){
+            output.append(s);
+            System.out.print(s);
+        }
+
+        return output.toString();
+    }
+
     /* Verifies whether the userInput is valid or not */
     public boolean checkInput(String userInput){
 
@@ -99,7 +157,7 @@ public class Calculator {
             return false;
         }
 
-        char[] operators = new char[] { '+', '-', '*', '/', 'q', 's'};
+        char[] operators = new char[] { '+', '-', '*', '%', 'q', 's'};
 
         // Cache string input to char array
         char[] inputChars = userInput.toCharArray();
