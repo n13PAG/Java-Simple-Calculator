@@ -136,7 +136,7 @@ public class Calculator {
         while (!operatorStack.isEmpty()){
             outputQueue.add(String.valueOf(operatorStack.pop()));
         }
-        
+
         return new ArrayList<>(outputQueue);
     }
 
@@ -148,7 +148,7 @@ public class Calculator {
             return false;
         }
 
-        char[] operators = new char[] { '+', '-', '*', '%', 'q', 's'};
+        char[] operators = new char[] { '+', '-', '*', '/', 'q', 's'};
 
         // Cache string input to char array
         char[] inputChars = userInput.toCharArray();
@@ -202,14 +202,41 @@ public class Calculator {
         return true;
     }
 
-//    public double evaluate(String parsedString){
+//    public double evaluate(ArrayList<String> rpnInput){
+////        { '+', '-', '*', '/', 'q', 's'};
 //        Stack<String> output = new Stack<>();
-//        char[] charArray = parsedString.toCharArray();
-//        for (int i = 0; i < charArray.length; i++) {
-//            char c = charArray[i];
-//            if (Character.isDigit(c)) {
-//                output.push(c);
+//        for (String s : rpnInput){
+//            if (s.length() == 1){
+//                char operator = s.toCharArray()[0];
+//                if (!Character.isDigit(operator)){
+//                    switch (operator){
+//                        case '+':
+//
+//                            double operand1 = Integer.parseInt(output.pop());
+//                            double operand2 = Integer.parseInt(output.pop());
+//                            return operand1 + operand2;
+//
+//                            break;
+//                        case '-':
+//                            break;
+//                        case '*':
+//                            break;
+//                        case '/':
+//                            break;
+//                        case 'q':
+//                            break;
+//                        case 's':
+//                            break;
+//                    }
+//                }
+//                else{
+//                    output.push(s);
+//                }
 //            }
+//            else {
+//                output.push(s);
+//            }
+//
 //        }
 //    }
 
