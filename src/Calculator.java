@@ -4,6 +4,7 @@ public class Calculator {
     private int cacheCapacity;
     private ArrayList<Double> cachedResults;
     private int currentResultIndex;
+    private char operator;
 
     /* Returns previous calculated result or return 0 if there are
      no cached results */
@@ -61,34 +62,34 @@ public class Calculator {
         currentResultIndex = 0;
     }
 
+    /* Parses string input for two operands. Returns double array of two elements */
+    public double[] parseInput_2_Operands(String input){
+        char[] operators = new char[] { '+', '-', '*', '/'};
+        char[] inputCharArray = input.toCharArray();
 
-//    public double[] parseInput_2_Operands(String input){
-//        char[] operators = new char[] { '+', '-', '*', '/'};
-//        char[] inputCharArray = input.toCharArray();
-//
-//        String firstOperand = "";
-//        String secondOperand = "";
-//        boolean firstOperandComplete = false;
-//        for (int i = 0; i < inputCharArray.length; i++){
-//            char c = inputCharArray[i];
-//            if (!firstOperandComplete){
-//                if (Character.isDigit(c)){
-//                    firstOperand += c;
-//                }
-//                else if (!Character.isLetter(c) && !Character.isWhitespace(c)) {
-//                    operator = c;
-//                    firstOperandComplete = true;
-//                }
-//            }
-//            else {
-//                if (Character.isDigit(c)){
-//                    secondOperand += c;
-//                }
-//            }
-//        }
-//
-//        return new double[] {Integer.parseInt(firstOperand), Integer.parseInt(secondOperand)};
-//    }
+        StringBuilder f1 = new StringBuilder();
+        StringBuilder f2 = new StringBuilder();
+        boolean firstOperandComplete = false;
+        for (char c : inputCharArray) {
+            if (!firstOperandComplete) {
+                if (Character.isDigit(c)) {
+                    f1.append(c);
+                } else if (!Character.isLetter(c) && !Character.isWhitespace(c)) {
+                    operator = c;
+                    firstOperandComplete = true;
+                }
+            } else {
+                if (Character.isDigit(c)) {
+                    f2.append(c);
+                }
+            }
+        }
+
+        String firstOperand = f1.toString();
+        String secondOperand = f2.toString();
+
+        return new double[] {Integer.parseInt(firstOperand), Integer.parseInt(secondOperand)};
+    }
 
     /* Verifies whether the userInput is valid or not */
     public boolean checkInput(String userInput){
