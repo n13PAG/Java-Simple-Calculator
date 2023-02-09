@@ -93,7 +93,7 @@ public class Calculator {
     }
 
     public ArrayList<String> parseInput(String userInput){
-        char[] operatorPrecedence = new char[]{'+', '-', '*', '/', '^', 'q'};
+        char[] operatorPrecedence = new char[]{'+', '-', '*', '/', 'p', 'q', '!'};
         String precedenceString = new String(operatorPrecedence);
         Stack<Character> operatorStack = new Stack<>();
         Queue<String> outputQueue = new LinkedList<>();
@@ -102,13 +102,54 @@ public class Calculator {
 
         StringBuilder operand = new StringBuilder();
         boolean stringStarted = false;
+        boolean powerSpecial = false;
+        boolean factorialSpecial = false;
         for (char c : inputChars) {
             if (Character.isDigit(c)) {
-                operand.append(c);
-                stringStarted = true;
+                if (powerSpecial && c == '2'){
+                    powerSpecial = false;
+                    stringStarted = false;
+                    outputQueue.add(operand.toString());
+                    operand.delete(0, operand.length());
+                }
+                else if (factorialSpecial && c == '!'){
+                    factorialSpecial = false;
+                    stringStarted = false;
+                    outputQueue.add(operand.toString());
+                    operand.delete(0, operand.length());
+                }
+                else {
+                    operand.append(c);
+                    stringStarted = true;
+                }
             } else {
                 // If Char is decimal add to operand string
                 if (c == '.' && stringStarted) {
+                    operand.append(c);
+                    continue;
+                }
+
+                // If char is '?' add to operand string
+                // Represents square root
+                if (c == '?' && !stringStarted){
+                    stringStarted = true;
+                    c = 'q';
+                    operand.append(c);
+                    continue;
+                }
+
+                // If char is '^' add to operand string
+                // Represents square
+                if (c == '^' && stringStarted){
+                    powerSpecial = true;
+                    c = 'p';
+                    operand.append(c);
+                    continue;
+                }
+
+                // If char is '!' add to operand string
+                if (c == '!' && stringStarted){
+                    factorialSpecial = true;
                     operand.append(c);
                     continue;
                 }
@@ -198,46 +239,100 @@ public class Calculator {
         if (hasNoOperators){
             return false;
         }
-
         return true;
     }
 
-//    public double evaluate(ArrayList<String> rpnInput){
-////        { '+', '-', '*', '/', 'q', 's'};
-//        Stack<String> output = new Stack<>();
-//        for (String s : rpnInput){
-//            if (s.length() == 1){
-//                char operator = s.toCharArray()[0];
-//                if (!Character.isDigit(operator)){
-//                    switch (operator){
-//                        case '+':
-//
-//                            double operand1 = Integer.parseInt(output.pop());
-//                            double operand2 = Integer.parseInt(output.pop());
-//                            return operand1 + operand2;
-//
-//                            break;
-//                        case '-':
-//                            break;
-//                        case '*':
-//                            break;
-//                        case '/':
-//                            break;
-//                        case 'q':
-//                            break;
-//                        case 's':
-//                            break;
-//                    }
-//                }
-//                else{
-//                    output.push(s);
-//                }
-//            }
-//            else {
-//                output.push(s);
-//            }
-//
-//        }
-//    }
+    public double evaluate(ArrayList<String> rpnInput){
+//        { '+', '-', '*', '/', 'q', 's'};
+        Stack<Double> output = new Stack<>();
+        BasicCalculator basicCalculator = new BasicCalculator();
+        UnaryCalculator unaryCalculator = new UnaryCalculator();
+        for (String s : rpnInput){
+            if (s.length() == 1){
+                char operator = s.toCharArray()[0];
+                if (!Character.isDigit(operator)){
+
+                    ArrayList<Double> outputArr = new ArrayList<>();
+                    double operand1;
+                    double operand2;
+                    switch (operator){
+                        case '+':
+
+                            outputArr.add(output.pop());
+                            outputArr.add(output.pop());
+                            output.push(basicCalculator.add(outputArr));
+
+                            break;
+                        case '-':
+
+                            operand2 = output.pop();
+                            operand1 = output.pop();
+                            outputArr.add(operand1);
+                            outputArr.add(operand2);
+                            output.push(basicCalculator.subtract(outputArr));
+
+                            break;
+                        case '*':
+
+                            outputArr.add(output.pop());
+                            outputArr.add(output.pop());
+                            output.push(basicCalculator.multiply(outputArr));
+
+                            break;
+                        case '/':
+
+                            operand2 = output.pop();
+                            operand1 = output.pop();
+                            outputArr.add(operand1);
+                            outputArr.add(operand2);
+                            output.push(basicCalculator.divide(outputArr));
+
+                            break;
+                    }
+                    outputArr.clear();
+                }
+                else{
+                    output.push(Double.valueOf(s));
+                }
+            }
+            else if (s.length() > 1) {
+                if (s.toCharArray()[0] == 'q'){
+                    char[] squareRootString = s.toCharArray();
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 1; i < squareRootString.length; i++){
+                        builder.append(squareRootString[i]);
+                    }
+                    ArrayList<Double> sqDub = new ArrayList<>();
+                    sqDub.add(Double.valueOf(builder.toString()));
+                    output.push(unaryCalculator.squareRoot(sqDub));
+                }
+                else if (s.toCharArray()[s.toCharArray().length - 1] == 'p'){
+                    char[] powerArr = s.toCharArray();
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < powerArr.length - 1; i++){
+                        builder.append(powerArr[i]);
+                    }
+                    ArrayList<Double> pDub = new ArrayList<>();
+                    pDub.add(Double.valueOf(builder.toString()));
+                    output.push(unaryCalculator.square(pDub));
+                }
+                else if (s.toCharArray()[s.toCharArray().length - 1] == '!'){
+                    char[] factArr = s.toCharArray();
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < factArr.length - 1; i++){
+                        builder.append(factArr[i]);
+                    }
+                    ArrayList<Double> fDub = new ArrayList<>();
+                    fDub.add(Double.valueOf(builder.toString()));
+                    output.push(unaryCalculator.factorial(fDub));
+                }
+                else {
+                    output.push(Double.valueOf(s));
+                }
+            }
+
+        }
+        return output.get(0);
+    }
 
 }
