@@ -61,4 +61,95 @@ public class Calculator {
         currentResultIndex = 0;
     }
 
+
+//    public double[] parseInput_2_Operands(String input){
+//        char[] operators = new char[] { '+', '-', '*', '/'};
+//        char[] inputCharArray = input.toCharArray();
+//
+//        String firstOperand = "";
+//        String secondOperand = "";
+//        boolean firstOperandComplete = false;
+//        for (int i = 0; i < inputCharArray.length; i++){
+//            char c = inputCharArray[i];
+//            if (!firstOperandComplete){
+//                if (Character.isDigit(c)){
+//                    firstOperand += c;
+//                }
+//                else if (!Character.isLetter(c) && !Character.isWhitespace(c)) {
+//                    operator = c;
+//                    firstOperandComplete = true;
+//                }
+//            }
+//            else {
+//                if (Character.isDigit(c)){
+//                    secondOperand += c;
+//                }
+//            }
+//        }
+//
+//        return new double[] {Integer.parseInt(firstOperand), Integer.parseInt(secondOperand)};
+//    }
+
+    /* Verifies whether the userInput is valid or not */
+    public boolean checkInput(String userInput){
+
+        if (userInput == null){
+            // User has not input anything
+            return false;
+        }
+
+        char[] operators = new char[] { '+', '-', '*', '/', 'q', 's'};
+
+        // Cache string input to char array
+        char[] inputChars = userInput.toCharArray();
+
+        boolean hasNoOperators = true;
+        boolean hasNoNumbers = true;
+        boolean lastInputCharWasOperator = false;
+
+        for (int i = 0; i < inputChars.length; i++){
+            if (Character.isDigit(inputChars[i])){
+                hasNoNumbers = false;
+                lastInputCharWasOperator = false;
+                continue;
+            }
+            for (char c : operators){
+                if (i == 0){
+                    if (inputChars[i] == c){
+                        // First input char was an operator
+                        return false;
+                    }
+                }
+
+                if (i == inputChars.length - 1){
+                    if (inputChars[i] == c){
+                        // Last input char was an operator
+                        return false;
+                    }
+                }
+
+                if (inputChars[i] == c){
+                    if (!lastInputCharWasOperator){
+                        lastInputCharWasOperator = true;
+                        hasNoOperators = false;
+                    }
+                    else {
+                        // Operators were input consecutively
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (hasNoNumbers){
+            return false;
+        }
+
+        if (hasNoOperators){
+            return false;
+        }
+
+        return true;
+    }
+
 }
