@@ -18,15 +18,16 @@
      <div class="container">
         <div class="calc-body">
           <div class="calc-screen">
-            <div class="calc-operation"></div>
-            <input class="calc-typed" id = "calc" type ="text" name = "answer"> <br> <br>  
+            <div class="calc-operation"> ${result}</div>
+            <input class="calc-typed" id = "calc" type ="text" name = "answer" style="font-size: 18pt; height: 40px; width:230px; "><br> <br>  
             <!-- <div class="calc-typed"></div> -->
           </div>
+          
           <div class="calc-button-row">
             <!-- <div class="button c">C</div> -->
-            <input class="button c" type = "button" value = "AC" onclick = "form1.answer.value = '' ">
-            <input class="button l" type = "button" value = "&radic;" onclick = "form1.answer.value += '&radic;' ">
-            <input class="button l" type = "button" value = "x&sup2" onclick = "form1.answer.value += 'x&sup2' ">
+            <input class="button l" type = "submit" value = "AC" name="allclear">
+            <input class="button l" type = "button" value = "&radic;" onclick = "form1.answer.value += 'sqrt' ">
+            <input class="button l" type = "button" value = "x&sup2" onclick = "form1.answer.value += '^2' ">
             <input class="button l" type = "button" value = "/" onclick = "form1.answer.value += '/' ">
             <!-- <div class="button l">&radic;</div>
             <div class="button l">x<sup>2</sup></div>
@@ -57,9 +58,14 @@
           <div class="calc-button-row">
           	<input class="button" type = "button" value = "." onclick = "form1.answer.value += '.' ">
           	<input class="button" type = "button" value = "0" onclick = "form1.answer.value += '0' ">
-          	<input class="button" type = "button" value = "%" onclick = "form1.answer.value += '%' ">
-          	<input class="button l" type = "submit" value = "=" >
+          	<input class="button" type = "button" value = "!" onclick = "form1.answer.value += '!' ">
+          	<input class="button l" type = "submit" name="equal" value = "=" >
             </div>
+           <div class="calc-button-row" style="display:flex;">
+            <input class="button l" style="flex-grow: 4; justify-content: space-evenly;" type = "button" value = "ANS" onclick = " ">
+            <input class="button l" type = "button" value = "<" onclick = " ">
+            <input class="button l"  type = "button" value = ">" onclick = " ">
+          </div>
           </div>
         </div>
         </form>
